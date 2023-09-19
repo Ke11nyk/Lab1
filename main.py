@@ -1,16 +1,35 @@
-# This is a sample Python script.
+from tkinter import *
+import random
+import time
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+class Game:
+    def __init__(self):
+        self.tk = Tk()
+        self.tk.title("Game")
+        self.tk.resizable(0, 0)
+        self.tk.wm_attributes("-topmost", 1)
+        self.canvas = Canvas(self.tk, width=500, height=500, highlightthickness=0)
+        self.canvas.pack()
+        self.tk.update()
+        self.canvas_height = 500
+        self.canvas_width = 500
+        self.bg = PhotoImage(file="background.gif")
+        w = self.bg.width()
+        h = self.bg.height()
+        for x in range(0, 5):
+            for y in range(0, 5):
+                self.canvas.create_image(x * w, y * h, image=self.bg, anchor='nw')
+                self.sprites = []
+                self.running = True
 
+    def mainloop(self):
+        while 1:
+            if self.running == True:
+                for sprite in self.sprites:
+                    sprite.move()
+            self.tk.update_idletasks()
+            self.tk.update()
+            time.sleep(0.01)
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
-
-
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+g = Game()
+g.mainloop()
