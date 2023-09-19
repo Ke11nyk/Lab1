@@ -81,5 +81,42 @@ class Coords:
                 return True
         return False
 
+class Sprite:
+    def __init__(self, game):
+        self.game = game
+        self.endgame = False
+        self.coordinates = None
+    def move(self):
+        pass
+    def coords(self):
+        return self.coordinates
+
+class PlatformSprite(Sprite):
+    def __init__(self, game, photo_image, x, y, width, height):
+        Sprite.__init__(self, game)
+        self.photo_image = photo_image
+        self.image = game.canvas.create_image(x, y, image=self.photo_image, anchor='nw')
+        self.coordinates = Coords(x, y, x + width, y + height)
+
 g = Game()
+platform1 = PlatformSprite(g, PhotoImage(file="platform1.gif"), 0, 480, 100, 10)
+platform2 = PlatformSprite(g, PhotoImage(file="platform1.gif"), 150, 440, 100, 10)
+platform3 = PlatformSprite(g, PhotoImage(file="platform1.gif"), 300, 400, 100, 10)
+platform4 = PlatformSprite(g, PhotoImage(file="platform1.gif"), 300, 160, 100, 10)
+platform5 = PlatformSprite(g, PhotoImage(file="platform2.gif"), 175, 350, 66, 10)
+platform6 = PlatformSprite(g, PhotoImage(file="platform2.gif"), 50, 300, 66, 10)
+platform7 = PlatformSprite(g, PhotoImage(file="platform2.gif"), 170, 120, 66, 10)
+platform8 = PlatformSprite(g, PhotoImage(file="platform2.gif"), 45, 60, 66, 10)
+platform9 = PlatformSprite(g, PhotoImage(file="platform3.gif"), 170, 250, 32, 10)
+platform10 = PlatformSprite(g, PhotoImage(file="platform3.gif"), 230, 200, 32, 10)
+g.sprites.append(platform1)
+g.sprites.append(platform2)
+g.sprites.append(platform3)
+g.sprites.append(platform4)
+g.sprites.append(platform5)
+g.sprites.append(platform6)
+g.sprites.append(platform7)
+g.sprites.append(platform8)
+g.sprites.append(platform9)
+g.sprites.append(platform10)
 g.mainloop()
