@@ -1,5 +1,4 @@
 from tkinter import *
-import random
 import time
 
 class Game:
@@ -19,14 +18,18 @@ class Game:
         for x in range(0, 5):
             for y in range(0, 5):
                 self.canvas.create_image(x * w, y * h, image=self.bg, anchor='nw')
-                self.sprites = []
-                self.running = True
+        self.sprites = []
+        self.running = True
+        self.game_over_text = self.canvas.create_text(250, 250, text='YOU WON!', state='hidden')
 
     def mainloop(self):
         while 1:
             if self.running == True:
                 for sprite in self.sprites:
                     sprite.move()
+            else:
+                time.sleep(1)
+                self.canvas.itemconfig(self.game_over_text, state='normal')
             self.tk.update_idletasks()
             self.tk.update()
             time.sleep(0.01)
@@ -98,6 +101,32 @@ class PlatformSprite(Sprite):
         self.image = game.canvas.create_image(x, y, image=self.photo_image, anchor='nw')
         self.coordinates = Coords(x, y, x + width, y + height)
 
+class MovingPlatformSprite(PlatformSprite):
+    def __init__(self, game, photo_image, x, y, width, height):
+        PlatformSprite.__init__(self, game, photo_image, x, y, width, height)
+        self.x = 2
+        self.counter = 0
+        self.last_time = time.time()
+        self.width = width
+        self.height = height
+
+    def coords(self):
+        xy = self.game.canvas.coords(self.image)
+        self.coordinates.x1 = xy[0]
+        self.coordinates.y1 = xy[1]
+        self.coordinates.x2 = xy[0] + self.width
+        self.coordinates.y2 = xy[1] + self.height
+        return self.coordinates
+
+    def move(self):
+        if time.time() - self.last_time > 0.03:
+            self.last_time = time.time()
+            self.game.canvas.move(self.image, self.x, 0)
+            self.counter = self.counter + 1
+            if self.counter > 20:
+                self.x = self.x * -1
+                self.counter = 0
+
 class StickFigureSprite(Sprite):
     def __init__(self, game):
         Sprite.__init__(self, game)
@@ -121,7 +150,7 @@ class StickFigureSprite(Sprite):
         self.coordinates = Coords()
         game.canvas.bind_all('<KeyPress-Left>', self.turn_left)
         game.canvas.bind_all('<KeyPress-Right>', self.turn_right)
-        game.canvas.bind_all('<space>', self.jump)
+        game.canvas.bind_all('<KeyPress-Up>', self.jump)
 
     def turn_left(self, evt):
         if self.y == 0:
@@ -212,17 +241,39 @@ class StickFigureSprite(Sprite):
             self.y = 4
         self.game.canvas.move(self.image, self.x, self.y)
 
+    def end(self, sprite):
+        self.game.running = False
+        sprite.opendoor()
+        time.sleep(1)
+        self.game.canvas.itemconfig(self.image, state='hidden')
+        sprite.closedoor()
+
+class DoorSprite(Sprite):
+    def __init__(self, game, x, y, width, height):
+        Sprite.__init__(self, game)
+        self.closed_door = PhotoImage(file="door1.gif")
+        self.open_door = PhotoImage(file="door2.gif")
+        self.image = game.canvas.create_image(x, y, image=self.closed_door, anchor='nw')
+        self.coordinates = Coords(x, y, x + (width / 2), y + height)
+        self.endgame = True
+    def opendoor(self):
+        self.game.canvas.itemconfig(self.image, image=self.open_door)
+        self.game.tk.update_idletasks()
+
+    def closedoor(self):
+        self.game.canvas.itemconfig(self.image, image=self.closed_door)
+        self.game.tk.update_idletasks()
 
 g = Game()
 platform1 = PlatformSprite(g, PhotoImage(file="platform1.gif"), 0, 480, 100, 10)
 platform2 = PlatformSprite(g, PhotoImage(file="platform1.gif"), 150, 440, 100, 10)
 platform3 = PlatformSprite(g, PhotoImage(file="platform1.gif"), 300, 400, 100, 10)
 platform4 = PlatformSprite(g, PhotoImage(file="platform1.gif"), 300, 160, 100, 10)
-platform5 = PlatformSprite(g, PhotoImage(file="platform2.gif"), 175, 350, 66, 10)
+platform5 = MovingPlatformSprite(g, PhotoImage(file="platform2.gif"), 175, 350, 66, 10)
 platform6 = PlatformSprite(g, PhotoImage(file="platform2.gif"), 50, 300, 66, 10)
 platform7 = PlatformSprite(g, PhotoImage(file="platform2.gif"), 170, 120, 66, 10)
 platform8 = PlatformSprite(g, PhotoImage(file="platform2.gif"), 45, 60, 66, 10)
-platform9 = PlatformSprite(g, PhotoImage(file="platform3.gif"), 170, 250, 32, 10)
+platform9 = MovingPlatformSprite(g, PhotoImage(file="platform3.gif"), 170, 250, 32, 10)
 platform10 = PlatformSprite(g, PhotoImage(file="platform3.gif"), 230, 200, 32, 10)
 g.sprites.append(platform1)
 g.sprites.append(platform2)
@@ -234,6 +285,8 @@ g.sprites.append(platform7)
 g.sprites.append(platform8)
 g.sprites.append(platform9)
 g.sprites.append(platform10)
+door = DoorSprite(g, 45, 30, 40, 35)
+g.sprites.append(door)
 sf = StickFigureSprite(g)
 g.sprites.append(sf)
 g.mainloop()
