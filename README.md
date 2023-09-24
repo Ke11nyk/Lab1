@@ -1,5 +1,5 @@
 # Lab1
-~Disclaimer~
+**Disclaimer**
 
 Errors are possible in the calculations :)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
