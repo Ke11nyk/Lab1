@@ -142,7 +142,7 @@ class StickFigureSprite(Sprite):
         self.coordinates = Coords()
         self.tk = tk
         self.__count = 0
-        self.label = ttk.Label(self.tk, text=f"")
+        self.label = ttk.Label(self.tk, text=f"You made 0 jumps")
         self.label.pack(side=RIGHT)
         game.canvas.bind_all('<KeyPress-Left>', self.turn_left)
         game.canvas.bind_all('<KeyPress-Right>', self.turn_right)
