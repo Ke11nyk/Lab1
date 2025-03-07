@@ -1,4 +1,31 @@
 # Lab1
+
+Platformer Game (Python + Tkinter)
+
+This repository contains the source code for a 2D platformer game built using Python and the Tkinter library. The game includes essential platformer mechanics such as:
+
+   * Character movement and jumping
+   * Collision detection with platforms
+   * Movement of platforms
+   * Menu and statistics of game
+
+This project is ideal for those who want to learn the basics of game development in Python using Tkinter for the graphical interface.
+
+📌 How to Run:
+
+Install Python (version 3.8 or later).
+Clone the repository:
+```bash
+git clone <repo-url>
+cd platformer-game
+```
+
+Run the main script:
+```bash
+python main.py
+```
+
+
 **Disclaimer**
 
 Errors are possible in the calculations :)
